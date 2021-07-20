@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import {useHistory} from 'react-router-dom';
 import {Col, Row} from "react-bootstrap";
 import DashCard from "./common/DashCard";
 import DashTable from "./common/DashTable";
@@ -8,7 +9,7 @@ import Axios from '../../lib/Axios'
 
 function Portfolio() {
 
-    let [portfolio, setPortfolio] = useState({})
+    let [portfolio, setPortfolio] = useState([])
     let [portfolioTransactions, setPortfolioTransactions] = useState([])
 
     useEffect(()=>{
@@ -17,11 +18,17 @@ function Portfolio() {
     },[])
 
     async function getPortfolioTransactions(){
-        let {data} = await Axios.get('/api/portfolio/')
-        console.log(data['stock_dict'])
-        console.log(data['portfolio_records'])
-        // setPortfolioTransactions(data['portfolio_records'])
-        generatePortfolio(data['portfolio_records'], data['stock_dict'])
+        try{
+            let {data} = await Axios.get('/api/portfolio/')
+            console.log(data['stock_dict'])
+            console.log(data['portfolio_records'])
+            // setPortfolioTransactions(data['portfolio_records'])
+            generatePortfolio(data['portfolio_records'], data['stock_dict'])
+        }catch(e){
+
+            console.log(e)
+        }
+
     }
     async function deleteStockFromPortfolio(){
         let {data} = await Axios.post('/api/portfolio_delete/', {"id": "416294a0-d286-4f5f-a86a-834bb2679d2c"})
@@ -41,7 +48,7 @@ function Portfolio() {
                 portfolioArr.push(tempStockObj)
             }
         }
-        console.log(portfolioArr)
+        setPortfolio(portfolioArr)
     }
     return (
     <>
@@ -61,7 +68,7 @@ function Portfolio() {
         </Row>
         <Row className="mb-4 no-gutters">
             <Col className="col-12">
-                <DashTable />
+                <DashTable title={"Portfolio"} stocks={portfolio} option={"portfolio"} />
             </Col>
         </Row>
 

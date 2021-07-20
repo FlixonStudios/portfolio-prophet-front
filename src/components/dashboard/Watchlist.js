@@ -59,10 +59,12 @@ function Watchlist({allStocks, addToWatchlist, watchlist, removeFromWatchList}) 
             </Row>
             <Row className="no-gutters">
                 <Col className={`col-12 col-xl-6`}>
-                    <DashTable watchList="true" stocks={watchlist} removeFromWatchList={removeFromWatchList} />
+                    <DashTable title={"Watchlist"} option="watchlist"
+                               stocks={watchlist} removeFromTable={removeFromWatchList} />
                 </Col>
                 <Col className={`col-12 col-xl-6`}>
-                    <DashTable addToWatchlist={addToWatchlist} recoStocks="true" stocks={topFive} />
+                    <DashTable title={"Recommended Stocks"} option="recommended"
+                               stocks={topFive} addToTable={addToWatchlist}  />
                 </Col>
             </Row>
         </>

@@ -21,7 +21,7 @@ function App() {
   return (
     <BrowserRouter>
         <Switch>
-            <PrivateRouter path="/dashboard" auth={auth}>
+            <PrivateRouter path="/dashboard" loading={loading} auth={auth}>
                 <Dashboard setAuth={setAuth} auth={auth} />
             </PrivateRouter>
             <Route path="/">
@@ -33,6 +33,7 @@ function App() {
 }
 
 function PrivateRouter({auth, loading, children, path, location, ...rest}){
+    console.log("Private router hit")
     if(loading){
         return <div>Loading</div>
     }
@@ -41,7 +42,8 @@ function PrivateRouter({auth, loading, children, path, location, ...rest}){
             {(auth) ?
                 <Route path={path} auth={auth} {...rest}>
                     {children}
-                </Route> : <Redirect to={{
+                </Route> :
+                <Redirect to={{
                     pathname: "/login",
                     state: {from: location}
                 }}/>

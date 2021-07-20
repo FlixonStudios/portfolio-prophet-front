@@ -11,7 +11,11 @@ function ForecastRecommendation({stockDetail}) {
                 <div className="list--title">% Change</div>
             </div>
             <div className="d-flex card flex-row align-items-center">
-                <div className={`list--value recommendation-forecast ${stockDetail.yhat_30_advice == "BUY" && "green"} ${stockDetail.yhat_30_advice == "HOLD" && "orange"}  ${stockDetail.yhat_30_advice == "SELL" && "red"}`}>{stockDetail.yhat_30_advice}</div>
+                <div className={`list--value recommendation-forecast 
+                ${stockDetail.yhat_30_advice === "BUY" && "green"} 
+                ${stockDetail.yhat_30_advice === "HOLD" && "orange"}  
+                ${stockDetail.yhat_30_advice === "SELL" && "red"}`}>
+                    {stockDetail.yhat_30_advice}</div>
                 <div className="forecast--values">
                     <div className="d-flex upper-forecast">
                         <div>Upper</div>

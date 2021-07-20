@@ -24,24 +24,30 @@ Axios.interceptors.response.use(
         const originalRequest = error.config;
         let refreshToken = localStorage.refresh;
 
-        if( refreshToken &&
-            error.response.status === 401 &&
-            !originalRequest._retry
-        ){
+        if (error.response.status === 401
+            && originalRequest.url === `${baseUrl}/api/token/refresh/`) {
+            return Promise.reject(error);
+        }
+
+        if( refreshToken && error.response.status === 401 &&
+            !originalRequest._retry) {
             originalRequest._retry = true
-            return Axios.post(`${baseUrl}/api/token/refresh/`, { refresh : refreshToken})
+            return Axios.post(`${baseUrl}/api/token/refresh/`,
+                                { refresh : refreshToken})
                 .then(res => {
+
                     if( res.status === 200){
                         console.log(res.data)
                         localStorage.setItem("access", res.data.access)
-
                         return Axios(originalRequest);
                     }
+                }).catch(err => {
+
+                    //return Axios(originalRequest);
                 });
-
-
         }
         return Promise.reject(error)
-    })
+    }
+)
 
 export default Axios

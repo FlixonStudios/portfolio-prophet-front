@@ -6,8 +6,9 @@ export async function checkAuth(setAuth){
         if (res.status === 200 || res.status === 201){
             return true
         }
-        return false
+        return true
     }catch(e){
+        console.log("error caught")
         return false
     }
 }

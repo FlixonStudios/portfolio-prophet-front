@@ -26,6 +26,7 @@ Axios.interceptors.response.use(
 
         if (error.response.status === 401
             && originalRequest.url === `${baseUrl}/api/token/refresh/`) {
+            localStorage.clear()
             return Promise.reject(error);
         }
 

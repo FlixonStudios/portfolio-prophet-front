@@ -33,7 +33,7 @@ function App() {
 }
 
 function PrivateRouter({auth, loading, children, path, location, ...rest}){
-    console.log("Private router hit")
+
     if(loading){
         return <div>Loading</div>
     }

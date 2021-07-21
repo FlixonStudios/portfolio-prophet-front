@@ -1,9 +1,9 @@
 import React from 'react';
 
-function DashCard() {
+function DashCard({title='title'}) {
     return (
         <div className="d-flex flex-column dash-card-block">
-            <div className="list--title">title</div>
+            <div className="list--title">{title}</div>
             <div className="card">
                 content
             </div>

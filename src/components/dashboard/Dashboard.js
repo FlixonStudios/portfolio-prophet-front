@@ -23,6 +23,7 @@ function Dashboard({setAuth, auth}) {
 
     let [watchlist, setWatchList] = useState([])
 
+
     async function getWatchlist(){
         let {data} = await Axios.get('/api/watchlist/')
         setWatchList(data["watchlist_stocks"])

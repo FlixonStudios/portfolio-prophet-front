@@ -14,22 +14,17 @@ function Portfolio() {
 
     useEffect(()=>{
         getPortfolioTransactions()
-        //generatePortfolio()
     },[])
 
     async function getPortfolioTransactions(){
         try{
             let {data} = await Axios.get('/api/portfolio/')
-            console.log(data['stock_dict'])
-            console.log(data['portfolio_records'])
-            // setPortfolioTransactions(data['portfolio_records'])
             generatePortfolio(data['portfolio_records'], data['stock_dict'])
         }catch(e){
-
             console.log(e)
         }
-
     }
+
     async function deleteStockFromPortfolio(){
         let {data} = await Axios.post('/api/portfolio_delete/', {"id": "416294a0-d286-4f5f-a86a-834bb2679d2c"})
     }

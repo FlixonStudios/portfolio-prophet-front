@@ -76,7 +76,7 @@ function DashTable({stocks,title = "table", option, addToTable, removeFromTable}
                                     <>
                                         <td data-label="Avg Price Bought">${(stock.averagePriceBought).toFixed(2)}</td>
                                         <td data-label="Quantity on Hand">{stock.totalQuantity}</td>
-                                        <td data-label="Market Value">${stock.totalQuantity * stock.currentPrice}</td>
+                                        <td data-label="Market Value">${(stock.totalQuantity * stock.currentPrice).toFixed(2)}</td>
                                         <td data-label="Industry">{stock.industry}</td>
                                         <td data-label="Market Cap">{(stock.marketCap/1000000).toFixed(0)}</td>
                                     </>

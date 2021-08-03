@@ -1,7 +1,7 @@
 import Axios from "axios";
 
 let baseUrl = 'http://localhost:8000'
-
+//let baseUrl = 'https://portfolio-prophet-sei29.herokuapp.com'
 Axios.interceptors.request.use(
     config => {
         if(localStorage.access){
@@ -25,7 +25,7 @@ Axios.interceptors.response.use(
         let refreshToken = localStorage.refresh;
 
         if (error.response.status === 401
-            && originalRequest.url === `${baseUrl}/api/token/refresh/`) {
+            && originalRequest.url === `${baseUrl}/api/token/refresh/`) { //`${baseUrl}/api/token/refresh/`
             localStorage.clear()
             return Promise.reject(error);
         }

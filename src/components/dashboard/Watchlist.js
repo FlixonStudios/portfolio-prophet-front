@@ -1,8 +1,9 @@
-import React, { useEffect, useCallback, useState } from 'react'
+import debounce from 'lodash.debounce'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Col, Form, Row } from 'react-bootstrap'
-import DashTable from './common/DashTable'
 import { NavLink } from 'react-router-dom'
-import axios from 'axios'
+import { portfolioService } from '../../services/portfolio'
+import DashTable from './common/DashTable'
 
 function Watchlist({
     allStocks,
@@ -28,57 +29,25 @@ function Watchlist({
     let [autosuggest, setAutoSuggest] = useState([])
 
     const debouncedGetAutoComplete = useCallback(
-        debounce(() => {
+        debounce(async (searchTerm) => {
             // TODO: Fix one letter delay
-            getAutoComplete(textInput)
-        }, 3000),
-        [],
-    )
+            await getAutoComplete(searchTerm)
+        }, 3000)
+    , [])
 
     function handleInput(e) {
-        debouncedGetAutoComplete()
         setTextInput(e.target.value)
-    }
-
-    function debounce(fn, delay = 500) {
-        let timeoutId
-
-        return (...args) => {
-            // cancel the previous timer
-            if (timeoutId) {
-                clearTimeout(timeoutId)
-            }
-            // setup a new timer
-            timeoutId = setTimeout(() => {
-                fn.apply(null, args)
-            }, delay)
-        }
+        debouncedGetAutoComplete(e.target.value)
     }
 
     async function getAutoComplete(searchTerm, region = 'SG') {
-        try {
-            let { data } = await axios.get(
-                `/api/stocks/getAutoComplete?term=${searchTerm}&region=${region}`,
-            )
-            setAutoSuggest(data.quotes)
-        } catch (error) {
-            console.log('>>>>error', error)
-            setAutoSuggest([])
-        }
+        let suggestions = await portfolioService.getAutoComplete(
+            searchTerm,
+            region,
+        )
+        setAutoSuggest(suggestions)
     }
 
-    useEffect(() => {
-        if (textInput) {
-            search(textInput)
-        }
-    }, [textInput])
-
-    function search(query) {
-        let filteredNames = allStocks.filter((element) => {
-            return element.symbol.toLowerCase().includes(query.toLowerCase())
-        })
-        setAutoSuggest(filteredNames)
-    }
 
     return (
         <>

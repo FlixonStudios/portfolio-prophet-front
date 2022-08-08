@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Container } from 'react-bootstrap'
 import { Route } from 'react-router-dom'
 import Axios from '../../lib/Axios'
+import { portfolioService } from '../../services/portfolio'
 import Details from '../website/Details'
 import DashContent from './common/DashContent'
 import SideNavigation from './common/SideNavigation'
@@ -23,8 +24,8 @@ function Dashboard({ setAuth, auth }) {
     let [watchlist, setWatchList] = useState([])
 
     async function getWatchlist() {
-        let { data } = await Axios.get('/api/watchlist/')
-        setWatchList(data['watchlist_stocks'])
+        let { data } = await portfolioService.getWatchlist();
+        setWatchList(data)
     }
 
     async function removeFromWatchList(stock_id) {

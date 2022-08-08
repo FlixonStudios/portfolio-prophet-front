@@ -51,7 +51,6 @@ function Watchlist({
     async function addToWatchlist(e, symbol) {
         e.preventDefault()
         await portfolioService.addToWatchlist(symbol)
-        // refresh watchlist 
     }
 
     return (

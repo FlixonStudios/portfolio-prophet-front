@@ -1,7 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {NavLink} from "react-router-dom";
-import {Button, Form, Modal} from "react-bootstrap";
-import Axios from "../../../lib/Axios"
+import React, { useEffect, useState } from 'react';
+import { NavLink } from "react-router-dom";
 import AddStockModal from "./AddStockModal";
 
 function DashTable({stocks,title = "table", option, addToTable, removeFromTable}) {
@@ -62,7 +60,7 @@ function DashTable({stocks,title = "table", option, addToTable, removeFromTable}
                             <td>Latest Price</td>
                             <td>% Change</td>
                             <td>Volume Transacted</td>
-                            <td>Prediction</td>
+                            {/* <td>Prediction</td> */}
                             <td>Actions</td>
                         </tr>
                         </thead>
@@ -84,16 +82,16 @@ function DashTable({stocks,title = "table", option, addToTable, removeFromTable}
                                 }
 
 
-                                <td data-label="Latest Price">${stock.currentPrice}</td>
+                                <td data-label="Latest Price">${stock.regularMarketPrice}</td>
                                 <td data-label="% Change"
-                                    className={`${(stock.price_change.toString().charAt(0) === "-") ? "red" : "green"}`}>
-                                    {stock.percent_change}%</td>
-                                <td data-label="Volume Transacted">{stock.volume}</td>
-                                <td data-label="Prediction"
+                                    className={`${(stock.regularMarketChangePercent.toString().charAt(0) === "-") ? "red" : "green"}`}>
+                                    {stock.regularMarketChangePercent.toFixed(2)}%</td>
+                                <td data-label="Volume Transacted">{stock.regularMarketVolume}</td>
+                                {/* <td data-label="Prediction"
                                     className={`${stock.yhat_30_advice === "BUY" && "green"} 
                                                 ${stock.yhat_30_advice == "HOLD" && "orange"}  
                                                 ${stock.yhat_30_advice == "SELL" && "red"}`}>
-                                    {stock.yhat_30_advice}</td>
+                                    {stock.yhat_30_advice}</td> */}
                                 <td>
                                     <span className="material-icons">
 

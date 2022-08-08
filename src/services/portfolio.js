@@ -27,6 +27,21 @@ class PortfolioService {
             console.log('Error:', error)
         }
     }
+
+    async getWatchlist(){
+        try {
+            return await axios.get(
+                `/api/stocks/watchlist/`,
+                {
+                    headers: {
+                        token: `${localStorage.access}`,
+                    },
+                },
+            )
+        } catch (error) {
+            console.log('Error:', error)
+        }
+    }
 }
 
 export const portfolioService = new PortfolioService()

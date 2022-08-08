@@ -7,7 +7,6 @@ import DashTable from './common/DashTable'
 
 function Watchlist({
     allStocks,
-    addToWatchlist,
     watchlist,
     removeFromWatchList,
 }) {
@@ -32,8 +31,9 @@ function Watchlist({
         debounce(async (searchTerm) => {
             // TODO: Fix one letter delay
             await getAutoComplete(searchTerm)
-        }, 3000)
-    , [])
+        }, 3000),
+        [],
+    )
 
     function handleInput(e) {
         setTextInput(e.target.value)
@@ -48,6 +48,11 @@ function Watchlist({
         setAutoSuggest(suggestions)
     }
 
+    async function addToWatchlist(e, symbol) {
+        e.preventDefault()
+        await portfolioService.addToWatchlist(symbol)
+        // refresh watchlist 
+    }
 
     return (
         <>
@@ -66,12 +71,22 @@ function Watchlist({
                                     <ul>
                                         {autosuggest?.length > 0 ? (
                                             autosuggest.map((stock) => (
-                                                <li key={stock.id}>
+                                                <li
+                                                    key={stock.symbol}
+                                                    style={styles.searchResults}
+                                                >
                                                     <NavLink
                                                         to={`/dashboard/details/${stock.symbol}`}
                                                     >
                                                         {`[${stock.symbol}] ${stock.shortname}`}
                                                     </NavLink>
+                                                    <button
+                                                        type="button"
+                                                        className="btn btn-secondary"
+                                                        onClick={(e) => addToWatchlist(e, stock.symbol)}
+                                                    >
+                                                        Add
+                                                    </button>
                                                 </li>
                                             ))
                                         ) : (
@@ -104,6 +119,14 @@ function Watchlist({
             </Row>
         </>
     )
+}
+
+const styles = {
+    searchResults: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
 }
 
 export default Watchlist

@@ -5,11 +5,7 @@ import { NavLink } from 'react-router-dom'
 import { portfolioService } from '../../services/portfolio'
 import DashTable from './common/DashTable'
 
-function Watchlist({
-    allStocks,
-    watchlist,
-    removeFromWatchList,
-}) {
+function Watchlist({ allStocks, watchlist }) {
     let [topFive, setTopFive] = useState([])
 
     let fiveStocks = []
@@ -26,6 +22,7 @@ function Watchlist({
 
     let [textInput, setTextInput] = useState('')
     let [autosuggest, setAutoSuggest] = useState([])
+    let [showSearchResults, setShowSearchResults] = useState(false)
 
     const debouncedGetAutoComplete = useCallback(
         debounce(async (searchTerm) => {
@@ -37,6 +34,7 @@ function Watchlist({
 
     function handleInput(e) {
         setTextInput(e.target.value)
+        setShowSearchResults(true)
         debouncedGetAutoComplete(e.target.value)
     }
 
@@ -49,8 +47,14 @@ function Watchlist({
     }
 
     async function addToWatchlist(e, symbol) {
-        e.preventDefault()
+        e.preventDefault();
+        setShowSearchResults(false)
         await portfolioService.addToWatchlist(symbol)
+    }
+
+    async function removeFromWatchList(e, symbol) {
+        e.preventDefault();
+        await portfolioService.removeFromWatchlist(symbol)
     }
 
     return (
@@ -65,7 +69,7 @@ function Watchlist({
                                 placeholder="Search Stocks"
                                 onChange={handleInput}
                             />
-                            {textInput && (
+                            {showSearchResults && (
                                 <div className="auto-suggest">
                                     <ul>
                                         {autosuggest?.length > 0 ? (
@@ -82,7 +86,12 @@ function Watchlist({
                                                     <button
                                                         type="button"
                                                         className="btn btn-secondary"
-                                                        onClick={(e) => addToWatchlist(e, stock.symbol)}
+                                                        onClick={(e) =>
+                                                            addToWatchlist(
+                                                                e,
+                                                                stock.symbol,
+                                                            )
+                                                        }
                                                     >
                                                         Add
                                                     </button>

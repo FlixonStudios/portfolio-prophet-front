@@ -28,16 +28,29 @@ class PortfolioService {
         }
     }
 
-    async getWatchlist(){
+    async removeFromWatchlist(symbol) {
         try {
-            return await axios.get(
-                `/api/stocks/watchlist/`,
+            return await axios.post(
+                `/api/stocks/watchlist/remove`,
+                { symbol },
                 {
                     headers: {
                         token: `${localStorage.access}`,
                     },
                 },
             )
+        } catch (error) {
+            console.log('Error:', error)
+        }
+    }
+
+    async getWatchlist() {
+        try {
+            return await axios.get(`/api/stocks/watchlist/`, {
+                headers: {
+                    token: `${localStorage.access}`,
+                },
+            })
         } catch (error) {
             console.log('Error:', error)
         }

@@ -66,7 +66,7 @@ function DashTable({stocks,title = "table", option, addToTable, removeFromTable}
                         </thead>
                         <tbody>
                         {stocks && stocks.map((stock)=>(
-                            <tr key={stock.id}>
+                            <tr key={stock.symbol}>
                                 <td data-label="Name">
                                     <NavLink to={`/dashboard/details/${stock.symbol}`}>
                                         {stock.symbol}</NavLink></td>
@@ -97,18 +97,18 @@ function DashTable({stocks,title = "table", option, addToTable, removeFromTable}
 
                                     {showRemove &&
                                     <span className="material-icons-outlined"
-                                          onClick={() => removeFromTable(stock.id)}>
+                                          onClick={(e) => removeFromTable(e, stock.symbol)}>
                                         close
                                     </span>}
 
                                     {showAddToWatchlist &&
                                     <span className="material-icons-outlined"
-                                          onClick={()=>addToTable(stock.id)}>
+                                          onClick={()=>addToTable(stock.symbol)}>
                                         playlist_add
                                     </span>}
 
                                     <span className="material-icons-outlined"
-                                          id={stock.id}
+                                          id={stock.symbol}
                                           symbol={stock.symbol}
                                           name = {stock.name}
                                           price = {stock.currentPrice}

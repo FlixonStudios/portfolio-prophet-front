@@ -47,13 +47,13 @@ function Watchlist({ allStocks, watchlist }) {
     }
 
     async function addToWatchlist(e, symbol) {
-        e.preventDefault();
+        e.preventDefault()
         setShowSearchResults(false)
         await portfolioService.addToWatchlist(symbol)
     }
 
     async function removeFromWatchList(e, symbol) {
-        e.preventDefault();
+        e.preventDefault()
         await portfolioService.removeFromWatchlist(symbol)
     }
 

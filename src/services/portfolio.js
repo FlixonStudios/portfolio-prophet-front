@@ -72,6 +72,35 @@ class PortfolioService {
             console.log('Error:', error)
         }
     }
+
+    async getPortfolio() {
+        try {
+            const { data } = await axios.get(`/api/stocks/portfolio/get`, {
+                headers: {
+                    token: `${localStorage.access}`,
+                },
+            })
+            return data
+        } catch (error) {
+            console.log('Error:', error)
+            return null
+        }
+    }
+
+    async getUserStocks() {
+        try {
+            let { data } = await axios.get(`/api/stocks/user/get`, {
+                headers: {
+                    token: `${localStorage.access}`,
+                },
+            })
+            const { data: userStocks } = data
+            return userStocks
+        } catch (error) {
+            console.log('Error:', error)
+            return null
+        }
+    }
 }
 
 export const portfolioService = new PortfolioService()

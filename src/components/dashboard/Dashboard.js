@@ -1,70 +1,70 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Container } from 'react-bootstrap'
 import { Route } from 'react-router-dom'
 import Axios from '../../lib/Axios'
 import { portfolioService } from '../../services/portfolio'
 import Details from '../website/Details'
 import DashContent from './common/DashContent'
-import SideNavigation from './common/SideNavigation'
 import Portfolio from './Portfolio'
+import SideNavigation from './common/SideNavigation'
 import Settings from './Settings'
 import Watchlist from './Watchlist'
 
 function Dashboard({ setAuth, auth }) {
-    let [allStocks, setAllStocks] = useState([])
+    let [userStocks, setUserStocks] = useState()
+    let [watchlist, setWatchList] = useState([])
+    let [portfolio, setPortfolio] = useState()
 
-    useEffect(() => {
-        async function getStocks() {
-            let { data } = await Axios.get('/api/show_all/')
-            setAllStocks(data['stock_record_all'])
-        }
-        getStocks()
+    const getUserStocks = useCallback(async () => {
+        const data = await portfolioService.getUserStocks()
+        setUserStocks(data)
     }, [])
 
-    let [watchlist, setWatchList] = useState([])
+    useEffect(() => {
+        getWatchlist()
+        getPortfolio()
+    }, [auth])
+
+    useEffect(() => {
+        getUserStocks()
+    }, [getUserStocks, portfolio, watchlist])
 
     async function getWatchlist() {
         let { data } = await portfolioService.getWatchlist();
+
         setWatchList(data)
     }
 
+    async function getPortfolio() {
+        let { data } = await portfolioService.getPortfolio()
     async function removeFromWatchList(stock_id) {
         let { data } = await Axios.post(`/api/watchlist_delete/`, {
             id: stock_id,
         })
         getWatchlist()
+        setPortfolio(data['EQUITY'])
     }
-
-    useEffect(() => {
-        getWatchlist()
-    }, [auth])
 
     return (
         <div className="dashboard-container">
             <SideNavigation setAuth={setAuth} />
             <Container fluid className="px-0 dashboard-content">
                 <Route path="/dashboard" exact>
-                    <DashContent
-                        watchlist={watchlist}
-                        removeFromWatchList={removeFromWatchList}
-                    />
+                    <DashContent watchlist={watchlist} />
                 </Route>
                 <Route path="/dashboard/portfolio" exact>
-                    <Portfolio />
+                    {userStocks && portfolio && (
+                        <Portfolio
+                            commonInfo={userStocks}
+                            portfolioInfo={portfolio}
+                        />
+                    )}
                 </Route>
                 <Route path="/dashboard/watchlist">
-                    <Watchlist
-                        watchlist={watchlist}
-                        removeFromWatchList={removeFromWatchList}
-                        allStocks={allStocks}
-                    />
+                    <Watchlist watchlistInfo={watchlist} commonInfo={userStocks} />
                 </Route>
                 <Route path="/dashboard/details/:symbol">
-                    <Details
-                        auth={auth}
-                        watchlist={watchlist}
-                        removeFromWatchList={removeFromWatchList}
-                    />
+                    <Details auth={auth} watchlist={watchlist} />
                 </Route>
                 <Route path="/dashboard/settings">
                     <Settings />

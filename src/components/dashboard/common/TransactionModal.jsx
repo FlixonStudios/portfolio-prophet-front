@@ -4,8 +4,11 @@ import { portfolioService } from '../../../services/portfolio'
 
 function TransactionModal({ setShow, show, context, defaultValue }) {
     let [transaction, setTransaction] = useState({
-        ...defaultValue,
+        unitPrice: context.regularMarketPrice,
+        symbol: context.symbol,
+        fee: 0,
         dateAdded: new Date(),
+        ...defaultValue,
     })
 
     const handleClose = () => setShow(false)
@@ -44,7 +47,11 @@ function TransactionModal({ setShow, show, context, defaultValue }) {
                                 name={'dateAdded'}
                                 type="date"
                                 onChange={change}
-                                defaultValue={defaultValue.dateAdded}
+                                defaultValue={
+                                    defaultValue
+                                        ? defaultValue.dateAdded
+                                        : new Date()
+                                }
                             />
                         </Form.Group>
                         <Form.Group controlId="quantity">
@@ -53,7 +60,9 @@ function TransactionModal({ setShow, show, context, defaultValue }) {
                                 name={'quantity'}
                                 type="text"
                                 onChange={change}
-                                defaultValue={defaultValue.quantity}
+                                defaultValue={
+                                    defaultValue ? defaultValue.quantity : 0
+                                }
                             />
                         </Form.Group>
                         <Form.Group controlId="currency">

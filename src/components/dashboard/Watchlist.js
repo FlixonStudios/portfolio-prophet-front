@@ -3,30 +3,45 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { Col, Form, Row } from 'react-bootstrap'
 import { NavLink } from 'react-router-dom'
 import { portfolioService } from '../../services/portfolio'
-import DashTable from './common/DashTable'
+import Table from './common/Table'
+import TransactionModal from './common/TransactionModal'
 
-function Watchlist({ allStocks, watchlist }) {
-    let [topFive, setTopFive] = useState([])
+const DEFAULT_ADD = {
+    region: 'SG',
+    quantity: 0,
+    currency: 'SGD',
+    exchangeRateToSGD: 1,
+    action: 'BOUGHT',
+    type: 'EQUITY',
+    account: 'EQUITY',
+    finalAmount: 0,
+    dateAdded: new Date(),
+}
 
-    let fiveStocks = []
-    useEffect(() => {
-        if (allStocks) {
-            fiveStocks = [...allStocks]
-                .sort((a, b) => {
-                    return b.yhat_30_ratio - a.yhat_30_ratio
-                })
-                .slice(0, 5)
-            setTopFive(fiveStocks)
-        }
-    }, [allStocks])
-
+function Watchlist({ watchlistInfo, commonInfo }) {
+    const [addShow, setAddShow] = useState(false)
+    const [modalStock, setModalStock] = useState()
+    let [watchlist, setWatchlist] = useState()
     let [textInput, setTextInput] = useState('')
     let [autosuggest, setAutoSuggest] = useState([])
     let [showSearchResults, setShowSearchResults] = useState(false)
 
+    const initialiseSettings = useCallback(() => {
+        let _watchlist = watchlistInfo.map((stock) => {
+            return {
+                ...watchlistInfo[stock.symbol],
+                ...commonInfo[stock.symbol],
+            }
+        })
+        setWatchlist(_watchlist)
+    }, [watchlistInfo, commonInfo])
+
+    useEffect(() => {
+        initialiseSettings()
+    }, [initialiseSettings])
+
     const debouncedGetAutoComplete = useCallback(
         debounce(async (searchTerm) => {
-            // TODO: Fix one letter delay
             await getAutoComplete(searchTerm)
         }, 3000),
         [],
@@ -36,6 +51,11 @@ function Watchlist({ allStocks, watchlist }) {
         setTextInput(e.target.value)
         setShowSearchResults(true)
         debouncedGetAutoComplete(e.target.value)
+    }
+
+    function handleAddStockShow(e, stock) {
+        setModalStock(stock)
+        setAddShow(true)
     }
 
     async function getAutoComplete(searchTerm, region = 'SG') {
@@ -55,6 +75,82 @@ function Watchlist({ allStocks, watchlist }) {
     async function removeFromWatchList(e, symbol) {
         e.preventDefault()
         await portfolioService.removeFromWatchlist(symbol)
+    }
+
+    function watchlistHeaders() {
+        return (
+            <>
+                <td>Symbol</td>
+                <td>Name</td>
+                <td>Latest Price</td>
+                <td>% Change</td>
+                <td>Volume Transacted</td>
+                <td>Actions</td>
+            </>
+        )
+    }
+
+    function getStatusColor(percentage) {
+        if (percentage) {
+            return percentage.toString().charAt(0) === '-' ? 'red' : 'green'
+        }
+        return ''
+    }
+
+    function watchlistRows() {
+        return (
+            <>
+                {watchlistInfo &&
+                    watchlist &&
+                    watchlist.map((stock, index) => (
+                        <tr>
+                            <td>
+                                <NavLink
+                                    to={`/dashboard/details/${stock.symbol}`}
+                                >
+                                    {stock.symbol}
+                                </NavLink>
+                            </td>
+                            <td data-label="Name">{stock.shortName}</td>
+
+                            <td data-label="Latest Price">
+                                ${stock.regularMarketPrice}
+                            </td>
+                            <td
+                                data-label="% Change"
+                                className={getStatusColor(
+                                    stock.regularMarketChangePercent,
+                                )}
+                            >
+                                {stock.regularMarketChangePercent.toFixed(2)}%
+                            </td>
+                            <td data-label="Volume Transacted">
+                                {stock.regularMarketVolume}
+                            </td>
+                            <td>
+                                <span className="material-icons">
+                                    <span
+                                        className="material-icons-outlined"
+                                        onClick={(e) =>
+                                            handleAddStockShow(e, stock)
+                                        }
+                                    >
+                                        add
+                                    </span>
+                                    <span
+                                        className="material-icons-outlined"
+                                        onClick={(e) =>
+                                            removeFromWatchList(e, stock.symbol)
+                                        }
+                                    >
+                                        remove
+                                    </span>
+                                </span>
+                            </td>
+                        </tr>
+                    ))}
+            </>
+        )
     }
 
     return (
@@ -109,22 +205,20 @@ function Watchlist({ allStocks, watchlist }) {
             </Row>
             <Row className="no-gutters">
                 <Col className={`col-12 col-xl-6`}>
-                    <DashTable
-                        title={'Watchlist'}
-                        option="watchlist"
-                        stocks={watchlist}
-                        removeFromTable={removeFromWatchList}
-                    />
-                </Col>
-                <Col className={`col-12 col-xl-6`}>
-                    <DashTable
-                        title={'Recommended Stocks'}
-                        option="recommended"
-                        stocks={topFive}
-                        addToTable={addToWatchlist}
+                    <Table
+                        rows={watchlistRows()}
+                        headers={watchlistHeaders()}
                     />
                 </Col>
             </Row>
+            {modalStock && addShow && (
+                <TransactionModal
+                    setShow={setAddShow}
+                    show={addShow}
+                    context={modalStock}
+                    defaultValue={DEFAULT_ADD}
+                />
+            )}
         </>
     )
 }

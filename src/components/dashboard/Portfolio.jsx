@@ -1,9 +1,10 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import Table from './common/Table'
-import { Col, Row } from 'react-bootstrap'
+import { Button, Col, Row } from 'react-bootstrap'
 import DashCard from './common/DashCard'
 import TransactionModal from './common/TransactionModal'
+import CashModal from './common/CashModal'
 
 const DEFAULT_ADD = {
     region: 'SG',
@@ -35,8 +36,10 @@ function Portfolio({
 }) {
     const [addShow, setAddShow] = useState(false)
     const [sellShow, setSellShow] = useState(false)
+    const [showCashModal, setShowCashModal] = useState(false)
     const [portfolio, setPortfolio] = useState([])
     const [modalStock, setModalStock] = useState()
+    const [cashAction, setCashAction] = useState()
 
     const initialiseSettings = useCallback(() => {
         let _portfolio = Object.keys(portfolioInfo).map((symbol) => {
@@ -62,6 +65,11 @@ function Portfolio({
         setModalStock(stock)
         setAddShow(false)
         setSellShow(true)
+    }
+
+    function handleShowCashModal(e, action) {
+        setCashAction(action)
+        setShowCashModal(true)
     }
 
     function portfolioHeaders() {
@@ -165,6 +173,26 @@ function Portfolio({
                 <Col className="col-12 col-md-3">
                     <DashCard title={'% Change'} />
                 </Col>
+                <Col className="col-12 col-md-3">
+                    <DashCard title={'Cash'} />
+                </Col>
+                <Col
+                    className="col-12 col-md-3 d-flex flex-column align-items-center"
+                    style={{}}
+                >
+                    <Button
+                        variant="primary"
+                        onClick={(e) => handleShowCashModal(e, 'DEPOSIT')}
+                    >
+                        Deposit
+                    </Button>
+                    <Button
+                        variant="success"
+                        onClick={(e) => handleShowCashModal(e, 'WITHDRAW')}
+                    >
+                        Withdraw
+                    </Button>
+                </Col>
             </Row>
             <Row className="mb-4 no-gutters">
                 <Col className="col-12">
@@ -188,7 +216,7 @@ function Portfolio({
                         />
                     )}
 
-                    {sellShow && (
+                    {sellShow && cashAction && (
                         <TransactionModal
                             setShow={setSellShow}
                             show={sellShow}
@@ -197,6 +225,14 @@ function Portfolio({
                         />
                     )}
                 </>
+            )}
+
+            {showCashModal && (
+                <CashModal
+                    setShow={setShowCashModal}
+                    show={showCashModal}
+                    action={cashAction}
+                />
             )}
         </>
     )

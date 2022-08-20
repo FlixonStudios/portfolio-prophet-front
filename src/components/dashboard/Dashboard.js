@@ -37,12 +37,7 @@ function Dashboard({ setAuth, auth }) {
 
     async function getPortfolio() {
         let { data } = await portfolioService.getPortfolio()
-    async function removeFromWatchList(stock_id) {
-        let { data } = await Axios.post(`/api/watchlist_delete/`, {
-            id: stock_id,
-        })
-        getWatchlist()
-        setPortfolio(data['EQUITY'])
+        setPortfolio(data)
     }
 
     return (
@@ -56,7 +51,8 @@ function Dashboard({ setAuth, auth }) {
                     {userStocks && portfolio && (
                         <Portfolio
                             commonInfo={userStocks}
-                            portfolioInfo={portfolio}
+                            portfolioEquity={portfolio['EQUITY']}
+                            portfolioCash={portfolio['CASH']}
                         />
                     )}
                 </Route>

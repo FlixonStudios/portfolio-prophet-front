@@ -40,8 +40,9 @@ const DEFAULT_DIVIDEND = {
 }
 
 function Portfolio({
-    portfolioInfo, // object with portfolio info (key: symbol)
-    commonInfo, // object with quote info (key: symbol)
+    portfolioEquity,
+    portfolioCash, 
+    commonInfo, 
 }) {
     const [addShow, setAddShow] = useState(false)
     const [sellShow, setSellShow] = useState(false)
@@ -52,18 +53,18 @@ function Portfolio({
     const [cashAction, setCashAction] = useState()
 
     const initialiseSettings = useCallback(() => {
-        let _portfolio = Object.keys(portfolioInfo).map((symbol) => {
+        let _portfolio = Object.keys(portfolioEquity).map((symbol) => {
             return {
-                ...portfolioInfo[symbol],
+                ...portfolioEquity[symbol],
                 ...commonInfo[symbol],
             }
         })
         setPortfolio(_portfolio)
-    }, [portfolioInfo, commonInfo])
+    }, [portfolioEquity, commonInfo])
 
     useEffect(() => {
         initialiseSettings()
-    }, [portfolioInfo, commonInfo, initialiseSettings])
+    }, [portfolioEquity, commonInfo, initialiseSettings])
 
     function handleAddStockShow(e, stock) {
         setModalStock(stock)
@@ -85,6 +86,19 @@ function Portfolio({
     function handleDividendShow(e, stock) {
         setModalStock(stock)
         setDividendShow(true)
+    }
+
+    function getCashValue() {
+        if (portfolioCash) {
+            const capital = portfolioCash['CAPITAL']
+                ? portfolioCash['CAPITAL'].total
+                : 0
+            const dividend = portfolioCash['DIVIDEND']
+                ? portfolioCash['DIVIDEND'].total
+                : 0
+            return capital + dividend
+        }
+        return 0
     }
 
     function portfolioHeaders() {
@@ -114,10 +128,10 @@ function Portfolio({
     function portfolioRows() {
         return (
             <>
-                {Object.keys(portfolioInfo).length > 0 &&
+                {Object.keys(portfolioEquity).length > 0 &&
                     portfolio &&
                     portfolio.map((stock, index) => (
-                        <tr>
+                        <tr key={index}>
                             <td>
                                 <NavLink
                                     to={`/dashboard/details/${stock.symbol}`}
@@ -127,16 +141,19 @@ function Portfolio({
                             </td>
                             <td data-label="Name">{stock.shortName}</td>
                             <td data-label="Avg Price Bought">
-                                ${stock.total / stock.quantity}
+                                ${stock.averagePriceBought}
                             </td>
                             <td data-label="Quantity on Hand">
                                 {stock.quantity}
                             </td>
                             <td data-label="Market Value">
-                                ${stock.quantity * stock.regularMarketPrice}
+                                $
+                                {(
+                                    stock.quantity * stock.regularMarketPrice
+                                ).toFixed(2)}
                             </td>
                             <td data-label="Market Cap">
-                                {stock.marketCap / 1000000}
+                                {(stock.marketCap / 1000000).toFixed(2)}
                             </td>
                             <td data-label="Latest Price">
                                 ${stock.regularMarketPrice}
@@ -197,7 +214,7 @@ function Portfolio({
                     <DashCard title={'% Change'} />
                 </Col>
                 <Col className="col-12 col-md-3">
-                    <DashCard title={'Cash'} />
+                    <DashCard title={'Cash'} value={`$ ${getCashValue()}`} />
                 </Col>
                 <Col
                     className="col-12 col-md-3 d-flex flex-column align-items-center"
@@ -239,7 +256,7 @@ function Portfolio({
                         />
                     )}
 
-                    {sellShow && cashAction && (
+                    {sellShow && (
                         <TransactionModal
                             setShow={setSellShow}
                             show={sellShow}

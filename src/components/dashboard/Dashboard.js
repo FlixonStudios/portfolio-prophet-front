@@ -61,7 +61,12 @@ function Dashboard({ setAuth, auth }) {
                     )}
                 </Route>
                 <Route path="/dashboard/watchlist">
-                    <Watchlist watchlistInfo={watchlist} commonInfo={userStocks} />
+                    {userStocks && watchlist && (
+                        <Watchlist
+                            watchlistInfo={watchlist}
+                            commonInfo={userStocks}
+                        />
+                    )}
                 </Route>
                 <Route path="/dashboard/details/:symbol">
                     <Details auth={auth} watchlist={watchlist} />

@@ -5,6 +5,7 @@ import { Button, Col, Row } from 'react-bootstrap'
 import DashCard from './common/DashCard'
 import TransactionModal from './common/TransactionModal'
 import CashModal from './common/CashModal'
+import DividendModal from './common/DividendModal'
 
 const DEFAULT_ADD = {
     region: 'SG',
@@ -30,12 +31,21 @@ const DEFAULT_SELL = {
     dateAdded: new Date(),
 }
 
+const DEFAULT_DIVIDEND = {
+    region: 'SG',
+    action: 'DEPOSIT',
+    type: 'DIVIDEND',
+    account: 'CASH',
+    dateAdded: new Date(),
+}
+
 function Portfolio({
     portfolioInfo, // object with portfolio info (key: symbol)
     commonInfo, // object with quote info (key: symbol)
 }) {
     const [addShow, setAddShow] = useState(false)
     const [sellShow, setSellShow] = useState(false)
+    const [dividendShow, setDividendShow] = useState(false)
     const [showCashModal, setShowCashModal] = useState(false)
     const [portfolio, setPortfolio] = useState([])
     const [modalStock, setModalStock] = useState()
@@ -70,6 +80,11 @@ function Portfolio({
     function handleShowCashModal(e, action) {
         setCashAction(action)
         setShowCashModal(true)
+    }
+
+    function handleDividendShow(e, stock) {
+        setModalStock(stock)
+        setDividendShow(true)
     }
 
     function portfolioHeaders() {
@@ -155,6 +170,14 @@ function Portfolio({
                                     >
                                         attach_money
                                     </span>
+                                    <span
+                                        className="material-icons-outlined"
+                                        onClick={(e) =>
+                                            handleDividendShow(e, stock)
+                                        }
+                                    >
+                                        paid
+                                    </span>
                                 </span>
                             </td>
                         </tr>
@@ -222,6 +245,15 @@ function Portfolio({
                             show={sellShow}
                             context={modalStock}
                             defaultValue={DEFAULT_SELL}
+                        />
+                    )}
+
+                    {dividendShow && (
+                        <DividendModal
+                            setShow={setDividendShow}
+                            show={dividendShow}
+                            context={modalStock}
+                            defaultValue={DEFAULT_DIVIDEND}
                         />
                     )}
                 </>

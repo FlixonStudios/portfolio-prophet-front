@@ -2,19 +2,21 @@ import React, { useState } from 'react'
 import { Button, Form, Modal } from 'react-bootstrap'
 import { portfolioService } from '../../../services/portfolio'
 
-function TransactionModal({ setShow, show, context, defaultValue }) {
+function DividendModal({ setShow, show, context, defaultValue }) {
     let [transaction, setTransaction] = useState({
         unitPrice: context.regularMarketPrice,
         symbol: context.symbol,
         fee: 0,
         dateAdded: new Date(),
+        exchangeRateToSGD:
+            context.records[context.records.length - 1].exchangeRateToSGD,
+        quantity: context.quantity,
         ...defaultValue,
     })
 
     const handleClose = () => setShow(false)
 
     async function addToPortfolio(e) {
-        //TODO: do not allow 0 quantity
         await portfolioService.addStockToPortfolio(transaction)
         handleClose()
     }
@@ -57,26 +59,11 @@ function TransactionModal({ setShow, show, context, defaultValue }) {
                         </Form.Group>
                         <Form.Group controlId="quantity">
                             <Form.Label>Qty</Form.Label>
-                            <Form.Control
-                                name={'quantity'}
-                                type="number"
-                                onChange={change}
-                                defaultValue={
-                                    defaultValue ? defaultValue.quantity : 0
-                                }
-                            />
+                            <div>{context ? context.quantity : 0}</div>
                         </Form.Group>
                         <Form.Group controlId="currency">
                             <Form.Label>Currency</Form.Label>
-                            <Form.Control
-                                as="select"
-                                name={'currency'}
-                                onChange={change}
-                            >
-                                <option value="SGD">SGD</option>
-                                <option value="USD">USD</option>
-                                <option value="EUR">EUR</option>
-                            </Form.Control>
+                            <div>{context.currency}</div>
                         </Form.Group>
                         <Form.Group controlId="exchangeRateToSGD">
                             <Form.Label>Exchange Rate</Form.Label>
@@ -84,7 +71,7 @@ function TransactionModal({ setShow, show, context, defaultValue }) {
                                 name={'exchangeRateToSGD'}
                                 type="number"
                                 onChange={change}
-                                defaultValue={defaultValue.exchangeRateToSGD}
+                                defaultValue={transaction.exchangeRateToSGD}
                             />
                         </Form.Group>
                         <Form.Group controlId="currentPrice">
@@ -124,4 +111,4 @@ function TransactionModal({ setShow, show, context, defaultValue }) {
     )
 }
 
-export default TransactionModal
+export default DividendModal

@@ -1,8 +1,14 @@
-import React, { useState } from 'react'
+import React, { useState, useCallback } from 'react'
 import { Button, Form, Modal } from 'react-bootstrap'
 import { portfolioService } from '../../../services/portfolio'
 
-function TransactionModal({ setShow, show, context, defaultValue }) {
+function TransactionModal({
+    setShow,
+    show,
+    context,
+    defaultValue,
+    getFunction,
+}) {
     let [transaction, setTransaction] = useState({
         unitPrice: context.regularMarketPrice,
         symbol: context.symbol,
@@ -11,13 +17,17 @@ function TransactionModal({ setShow, show, context, defaultValue }) {
         ...defaultValue,
     })
 
-    const handleClose = () => setShow(false)
+    const handleClose = useCallback(() => setShow(false), [setShow])
 
-    async function addToPortfolio(e) {
-        //TODO: do not allow 0 quantity
-        await portfolioService.addStockToPortfolio(transaction)
-        handleClose()
-    }
+    const addToPortfolio = useCallback(
+        async (e) => {
+            //TODO: do not allow 0 quantity
+            await portfolioService.addStockToPortfolio(transaction)
+            await getFunction()
+            handleClose()
+        },
+        [getFunction, handleClose, transaction],
+    )
 
     function change(e) {
         setTransaction((currState) => ({

@@ -2,6 +2,7 @@ import debounce from 'lodash.debounce'
 import React, { useCallback, useEffect, useState } from 'react'
 import { Col, Form, Row } from 'react-bootstrap'
 import { NavLink } from 'react-router-dom'
+import { formatNumber } from '../../lib/utils'
 import { portfolioService } from '../../services/portfolio'
 import Table from './common/Table'
 import TransactionModal from './common/TransactionModal'
@@ -18,7 +19,12 @@ const DEFAULT_ADD = {
     dateAdded: new Date(),
 }
 
-function Watchlist({ watchlistInfo, commonInfo }) {
+function Watchlist({
+    watchlistInfo,
+    commonInfo,
+    getWatchlist,
+    getPortfolio,
+}) {
     const [addShow, setAddShow] = useState(false)
     const [modalStock, setModalStock] = useState()
     let [watchlist, setWatchlist] = useState()
@@ -66,16 +72,18 @@ function Watchlist({ watchlistInfo, commonInfo }) {
         setAutoSuggest(suggestions)
     }
 
-    async function addToWatchlist(e, symbol) {
+    const addToWatchlist = useCallback(async (e, symbol)=>{
         e.preventDefault()
         setShowSearchResults(false)
         await portfolioService.addToWatchlist(symbol)
-    }
+        await getWatchlist();
+    }, [getWatchlist])
 
-    async function removeFromWatchList(e, symbol) {
+    const removeFromWatchList = useCallback(async (e, symbol) => {
         e.preventDefault()
         await portfolioService.removeFromWatchlist(symbol)
-    }
+        await getWatchlist();
+    }, [getWatchlist])
 
     function watchlistHeaders() {
         return (
@@ -103,7 +111,7 @@ function Watchlist({ watchlistInfo, commonInfo }) {
                 {watchlistInfo &&
                     watchlist &&
                     watchlist.map((stock, index) => (
-                        <tr>
+                        <tr key={index}>
                             <td>
                                 <NavLink
                                     to={`/dashboard/details/${stock.symbol}`}
@@ -122,7 +130,7 @@ function Watchlist({ watchlistInfo, commonInfo }) {
                                     stock.regularMarketChangePercent,
                                 )}
                             >
-                                {stock.regularMarketChangePercent.toFixed(2)}%
+                                {formatNumber(stock.regularMarketChangePercent)}%
                             </td>
                             <td data-label="Volume Transacted">
                                 {stock.regularMarketVolume}
@@ -217,6 +225,7 @@ function Watchlist({ watchlistInfo, commonInfo }) {
                     show={addShow}
                     context={modalStock}
                     defaultValue={DEFAULT_ADD}
+                    getFunction={getPortfolio}
                 />
             )}
         </>

@@ -6,6 +6,7 @@ import DashCard from './common/DashCard'
 import TransactionModal from './common/TransactionModal'
 import CashModal from './common/CashModal'
 import DividendModal from './common/DividendModal'
+import { formatNumber } from '../../lib/utils'
 
 const DEFAULT_ADD = {
     region: 'SG',
@@ -41,8 +42,9 @@ const DEFAULT_DIVIDEND = {
 
 function Portfolio({
     portfolioEquity,
-    portfolioCash, 
-    commonInfo, 
+    portfolioCash,
+    commonInfo,
+    getPortfolio,
 }) {
     const [addShow, setAddShow] = useState(false)
     const [sellShow, setSellShow] = useState(false)
@@ -130,75 +132,88 @@ function Portfolio({
             <>
                 {Object.keys(portfolioEquity).length > 0 &&
                     portfolio &&
-                    portfolio.map((stock, index) => (
-                        <tr key={index}>
-                            <td>
-                                <NavLink
-                                    to={`/dashboard/details/${stock.symbol}`}
-                                >
-                                    {stock.symbol}
-                                </NavLink>
-                            </td>
-                            <td data-label="Name">{stock.shortName}</td>
-                            <td data-label="Avg Price Bought">
-                                ${stock.averagePriceBought}
-                            </td>
-                            <td data-label="Quantity on Hand">
-                                {stock.quantity}
-                            </td>
-                            <td data-label="Market Value">
-                                $
-                                {(
-                                    stock.quantity * stock.regularMarketPrice
-                                ).toFixed(2)}
-                            </td>
-                            <td data-label="Market Cap">
-                                {(stock.marketCap / 1000000).toFixed(2)}
-                            </td>
-                            <td data-label="Latest Price">
-                                ${stock.regularMarketPrice}
-                            </td>
-                            <td
-                                data-label="% Change"
-                                className={getStatusColor(
-                                    stock.regularMarketChangePercent,
-                                )}
-                            >
-                                {stock.regularMarketChangePercent.toFixed(2)}%
-                            </td>
-                            <td data-label="Volume Transacted">
-                                {stock.regularMarketVolume}
-                            </td>
-                            <td>
-                                <span className="material-icons">
-                                    <span
-                                        className="material-icons-outlined"
-                                        onClick={(e) =>
-                                            handleAddStockShow(e, stock)
-                                        }
+                    portfolio.map((stock, index) => {
+                        if (stock.quantity > 0) {
+                            const marketValue =
+                                stock.quantity * stock.regularMarketPrice
+                            const marketCap = stock.marketCap / 1000000
+                            return (
+                                <tr key={index}>
+                                    <td>
+                                        <NavLink
+                                            to={`/dashboard/details/${stock.symbol}`}
+                                        >
+                                            {stock.symbol}
+                                        </NavLink>
+                                    </td>
+                                    <td data-label="Name">{stock.shortName}</td>
+                                    <td data-label="Avg Price Bought">
+                                        $
+                                        {formatNumber(stock.averagePriceBought)}
+                                    </td>
+                                    <td data-label="Quantity on Hand">
+                                        {stock.quantity}
+                                    </td>
+                                    <td data-label="Market Value">
+                                        ${formatNumber(marketValue)}
+                                    </td>
+                                    <td data-label="Market Cap">
+                                        {formatNumber(marketCap)}
+                                    </td>
+                                    <td data-label="Latest Price">
+                                        $
+                                        {formatNumber(stock.regularMarketPrice)}
+                                    </td>
+                                    <td
+                                        data-label="% Change"
+                                        className={getStatusColor(
+                                            stock.regularMarketChangePercent,
+                                        )}
                                     >
-                                        add
-                                    </span>
-                                    <span
-                                        className="material-icons-outlined"
-                                        onClick={(e) =>
-                                            handleSellStockShow(e, stock)
-                                        }
-                                    >
-                                        attach_money
-                                    </span>
-                                    <span
-                                        className="material-icons-outlined"
-                                        onClick={(e) =>
-                                            handleDividendShow(e, stock)
-                                        }
-                                    >
-                                        paid
-                                    </span>
-                                </span>
-                            </td>
-                        </tr>
-                    ))}
+                                        {formatNumber(
+                                            stock.regularMarketChangePercent,
+                                        )}
+                                        %
+                                    </td>
+                                    <td data-label="Volume Transacted">
+                                        {stock.regularMarketVolume}
+                                    </td>
+                                    <td>
+                                        <span className="material-icons">
+                                            <span
+                                                className="material-icons-outlined"
+                                                onClick={(e) =>
+                                                    handleAddStockShow(e, stock)
+                                                }
+                                            >
+                                                add
+                                            </span>
+                                            <span
+                                                className="material-icons-outlined"
+                                                onClick={(e) =>
+                                                    handleSellStockShow(
+                                                        e,
+                                                        stock,
+                                                    )
+                                                }
+                                            >
+                                                attach_money
+                                            </span>
+                                            <span
+                                                className="material-icons-outlined"
+                                                onClick={(e) =>
+                                                    handleDividendShow(e, stock)
+                                                }
+                                            >
+                                                paid
+                                            </span>
+                                        </span>
+                                    </td>
+                                </tr>
+                            )
+                        }
+                        return null
+                    })}
             </>
         )
     }
@@ -253,6 +268,7 @@ function Portfolio({
                             show={addShow}
                             context={modalStock}
                             defaultValue={DEFAULT_ADD}
+                            getFunction={getPortfolio}
                         />
                     )}
 
@@ -262,6 +278,7 @@ function Portfolio({
                             show={sellShow}
                             context={modalStock}
                             defaultValue={DEFAULT_SELL}
+                            getFunction={getPortfolio}
                         />
                     )}
 
@@ -271,6 +288,7 @@ function Portfolio({
                             show={dividendShow}
                             context={modalStock}
                             defaultValue={DEFAULT_DIVIDEND}
+                            getFunction={getPortfolio}
                         />
                     )}
                 </>
@@ -281,6 +299,7 @@ function Portfolio({
                     setShow={setShowCashModal}
                     show={showCashModal}
                     action={cashAction}
+                    getFunction={getPortfolio}
                 />
             )}
         </>

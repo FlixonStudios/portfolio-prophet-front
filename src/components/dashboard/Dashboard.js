@@ -1,12 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { Container } from 'react-bootstrap'
 import { Route } from 'react-router-dom'
-import Axios from '../../lib/Axios'
 import { portfolioService } from '../../services/portfolio'
 import Details from '../website/Details'
 import DashContent from './common/DashContent'
-import Portfolio from './Portfolio'
 import SideNavigation from './common/SideNavigation'
+import Portfolio from './Portfolio'
 import Settings from './Settings'
 import Watchlist from './Watchlist'
 
@@ -20,25 +19,26 @@ function Dashboard({ setAuth, auth }) {
         setUserStocks(data)
     }, [])
 
+    const getWatchlist = useCallback(async () => {
+        let { data } = await portfolioService.getWatchlist()
+        setWatchList(data)
+    }, [])
+
+    const getPortfolio = useCallback(async () => {
+        let { data } = await portfolioService.getPortfolio()
+        setPortfolio(data)
+    }, [])
+
     useEffect(() => {
         getWatchlist()
         getPortfolio()
-    }, [auth])
+    }, [auth, getWatchlist, getPortfolio])
 
     useEffect(() => {
+        //TODO: Find a way to stop get userStocks from being called 3 times on startup
         getUserStocks()
-    }, [getUserStocks, portfolio, watchlist])
+    }, [getUserStocks, watchlist, portfolio])
 
-    async function getWatchlist() {
-        let { data } = await portfolioService.getWatchlist();
-
-        setWatchList(data)
-    }
-
-    async function getPortfolio() {
-        let { data } = await portfolioService.getPortfolio()
-        setPortfolio(data)
-    }
 
     return (
         <div className="dashboard-container">
@@ -53,6 +53,7 @@ function Dashboard({ setAuth, auth }) {
                             commonInfo={userStocks}
                             portfolioEquity={portfolio['EQUITY']}
                             portfolioCash={portfolio['CASH']}
+                            getPortfolio={getPortfolio}
                         />
                     )}
                 </Route>
@@ -61,6 +62,8 @@ function Dashboard({ setAuth, auth }) {
                         <Watchlist
                             watchlistInfo={watchlist}
                             commonInfo={userStocks}
+                            getWatchlist={getWatchlist}
+                            getPortfolio={getPortfolio}
                         />
                     )}
                 </Route>

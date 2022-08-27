@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom'
 import Table from './common/Table'
 import { Button, Col, Row } from 'react-bootstrap'
 import DashCard from './common/DashCard'
-import TransactionModal from './common/TransactionModal'
+import StockModal from './common/StockModal'
 import CashModal from './common/CashModal'
 import DividendModal from './common/DividendModal'
 import { formatNumber } from '../../lib/utils'
@@ -263,7 +263,7 @@ function Portfolio({
             {modalStock && (
                 <>
                     {addShow && (
-                        <TransactionModal
+                        <StockModal
                             setShow={setAddShow}
                             show={addShow}
                             context={modalStock}
@@ -273,7 +273,7 @@ function Portfolio({
                     )}
 
                     {sellShow && (
-                        <TransactionModal
+                        <StockModal
                             setShow={setSellShow}
                             show={sellShow}
                             context={modalStock}

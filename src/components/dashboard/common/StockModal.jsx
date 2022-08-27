@@ -2,13 +2,7 @@ import React, { useState, useCallback } from 'react'
 import { Button, Form, Modal } from 'react-bootstrap'
 import { portfolioService } from '../../../services/portfolio'
 
-function TransactionModal({
-    setShow,
-    show,
-    context,
-    defaultValue,
-    getFunction,
-}) {
+function StockModal({ setShow, show, context, defaultValue, getFunction }) {
     let [transaction, setTransaction] = useState({
         unitPrice: context.regularMarketPrice,
         symbol: context.symbol,
@@ -134,4 +128,4 @@ function TransactionModal({
     )
 }
 
-export default TransactionModal
+export default StockModal

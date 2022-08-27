@@ -5,7 +5,7 @@ import { NavLink } from 'react-router-dom'
 import { formatNumber } from '../../lib/utils'
 import { portfolioService } from '../../services/portfolio'
 import Table from './common/Table'
-import TransactionModal from './common/TransactionModal'
+import StockModal from './common/StockModal'
 
 const DEFAULT_ADD = {
     region: 'SG',
@@ -19,12 +19,7 @@ const DEFAULT_ADD = {
     dateAdded: new Date(),
 }
 
-function Watchlist({
-    watchlistInfo,
-    commonInfo,
-    getWatchlist,
-    getPortfolio,
-}) {
+function Watchlist({ watchlistInfo, commonInfo, getWatchlist, getPortfolio }) {
     const [addShow, setAddShow] = useState(false)
     const [modalStock, setModalStock] = useState()
     let [watchlist, setWatchlist] = useState()
@@ -72,18 +67,24 @@ function Watchlist({
         setAutoSuggest(suggestions)
     }
 
-    const addToWatchlist = useCallback(async (e, symbol)=>{
-        e.preventDefault()
-        setShowSearchResults(false)
-        await portfolioService.addToWatchlist(symbol)
-        await getWatchlist();
-    }, [getWatchlist])
+    const addToWatchlist = useCallback(
+        async (e, symbol) => {
+            e.preventDefault()
+            setShowSearchResults(false)
+            await portfolioService.addToWatchlist(symbol)
+            await getWatchlist()
+        },
+        [getWatchlist],
+    )
 
-    const removeFromWatchList = useCallback(async (e, symbol) => {
-        e.preventDefault()
-        await portfolioService.removeFromWatchlist(symbol)
-        await getWatchlist();
-    }, [getWatchlist])
+    const removeFromWatchList = useCallback(
+        async (e, symbol) => {
+            e.preventDefault()
+            await portfolioService.removeFromWatchlist(symbol)
+            await getWatchlist()
+        },
+        [getWatchlist],
+    )
 
     function watchlistHeaders() {
         return (
@@ -130,7 +131,8 @@ function Watchlist({
                                     stock.regularMarketChangePercent,
                                 )}
                             >
-                                {formatNumber(stock.regularMarketChangePercent)}%
+                                {formatNumber(stock.regularMarketChangePercent)}
+                                %
                             </td>
                             <td data-label="Volume Transacted">
                                 {stock.regularMarketVolume}
@@ -220,7 +222,7 @@ function Watchlist({
                 </Col>
             </Row>
             {modalStock && addShow && (
-                <TransactionModal
+                <StockModal
                     setShow={setAddShow}
                     show={addShow}
                     context={modalStock}

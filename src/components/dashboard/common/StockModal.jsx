@@ -16,7 +16,7 @@ function StockModal({ setShow, show, context, defaultValue, getFunction }) {
     const addToPortfolio = useCallback(
         async (e) => {
             //TODO: do not allow 0 quantity
-            await portfolioService.addStockToPortfolio(transaction)
+            await portfolioService.tradeStock(transaction)
             await getFunction()
             handleClose()
         },

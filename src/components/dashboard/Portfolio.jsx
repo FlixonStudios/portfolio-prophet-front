@@ -91,6 +91,7 @@ function Portfolio({
     }
 
     function getCashValue() {
+        let cashValue = 0
         if (portfolioCash) {
             const capital = portfolioCash['CAPITAL']
                 ? portfolioCash['CAPITAL'].total
@@ -98,9 +99,21 @@ function Portfolio({
             const dividend = portfolioCash['DIVIDEND']
                 ? portfolioCash['DIVIDEND'].total
                 : 0
-            return capital + dividend
+            cashValue = capital + dividend
         }
-        return 0
+        return cashValue
+    }
+
+    function getCurrentValue() {
+        let marketValue = 0
+        if (portfolioCash && portfolioEquity) {
+            marketValue = portfolio.reduce(
+                (total, stock) =>
+                    (total += stock.quantity * stock.regularMarketPrice),
+                0,
+            )
+        }
+        return marketValue + getCashValue()
     }
 
     function portfolioHeaders() {
@@ -223,13 +236,19 @@ function Portfolio({
             <h1>Portfolio</h1>
             <Row className="mb-4 no-gutters">
                 <Col className="col-12 col-md-3">
-                    <DashCard title={'Current Value'} />
+                    <DashCard
+                        title={'Current Value'}
+                        value={`$ ${formatNumber(getCurrentValue())}`}
+                    />
                 </Col>
                 <Col className="col-12 col-md-3">
                     <DashCard title={'% Change'} />
                 </Col>
                 <Col className="col-12 col-md-3">
-                    <DashCard title={'Cash'} value={`$ ${getCashValue()}`} />
+                    <DashCard
+                        title={'Cash'}
+                        value={`$ ${formatNumber(getCashValue())}`}
+                    />
                 </Col>
                 <Col
                     className="col-12 col-md-3 d-flex flex-column align-items-center"

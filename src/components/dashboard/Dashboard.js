@@ -3,7 +3,6 @@ import { Container } from 'react-bootstrap'
 import { Route } from 'react-router-dom'
 import { portfolioService } from '../../services/portfolio'
 import Details from '../website/Details'
-import DashContent from './common/DashContent'
 import SideNavigation from './common/SideNavigation'
 import Portfolio from './Portfolio'
 import Settings from './Settings'
@@ -45,7 +44,6 @@ function Dashboard({ setAuth, auth }) {
             <SideNavigation setAuth={setAuth} />
             <Container fluid className="px-0 dashboard-content">
                 <Route path="/dashboard" exact>
-                    <DashContent watchlist={watchlist} />
                 </Route>
                 <Route path="/dashboard/portfolio" exact>
                     {userStocks && portfolio && (

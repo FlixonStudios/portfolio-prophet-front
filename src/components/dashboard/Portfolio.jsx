@@ -104,7 +104,7 @@ function Portfolio({
         return cashValue
     }
 
-    function getCurrentValue() {
+    function getEquityValue() {
         let marketValue = 0
         if (portfolioCash && portfolioEquity) {
             marketValue = portfolio.reduce(
@@ -113,7 +113,28 @@ function Portfolio({
                 0,
             )
         }
-        return marketValue + getCashValue()
+        return marketValue
+    }
+
+    function getPortfolioValue() {
+        return getEquityValue() + getCashValue()
+    }
+
+    function getOverallPercentageChange() {
+        const capitalInvestment = portfolioCash['CAPITAL'].records.reduce(
+            (total, record) => {
+                if (record.symbol === '_CASH') {
+                    return (total += record.finalAmount)
+                }
+                return total
+            },
+            0,
+        )
+
+        const percentage = getPortfolioValue() / capitalInvestment
+        const percentageChange = percentage * 100 - 100
+
+        return percentageChange
     }
 
     function portfolioHeaders() {
@@ -124,10 +145,10 @@ function Portfolio({
                 <td>Avg Price Bought</td>
                 <td>Quantity</td>
                 <td>Market Value</td>
-                <td>Market Cap ($M)</td>
+                <td>Unrealised P/L</td>
                 <td>Latest Price</td>
                 <td>% Change</td>
-                <td>Volume Transacted</td>
+                <td>% of Portfolio</td>
                 <td>Actions</td>
             </>
         )
@@ -149,6 +170,10 @@ function Portfolio({
                         if (stock.quantity > 0) {
                             const marketValue =
                                 stock.quantity * stock.regularMarketPrice
+                            const equityValue = getEquityValue()
+                            const unrealisedPNL =
+                                marketValue -
+                                stock.quantity * stock.averagePriceBought
                             const marketCap = stock.marketCap / 1000000
                             return (
                                 <tr key={index}>
@@ -170,8 +195,13 @@ function Portfolio({
                                     <td data-label="Market Value">
                                         ${formatNumber(marketValue)}
                                     </td>
-                                    <td data-label="Market Cap">
-                                        {formatNumber(marketCap)}
+                                    <td
+                                        data-label="Unrealised P/L"
+                                        className={getStatusColor(
+                                            unrealisedPNL,
+                                        )}
+                                    >
+                                        {formatNumber(unrealisedPNL)}
                                     </td>
                                     <td data-label="Latest Price">
                                         $
@@ -188,8 +218,10 @@ function Portfolio({
                                         )}
                                         %
                                     </td>
-                                    <td data-label="Volume Transacted">
-                                        {stock.regularMarketVolume}
+                                    <td data-label="% of Portfolio">
+                                        {`${formatNumber(
+                                            (marketValue / equityValue) * 100,
+                                        )}%`}
                                     </td>
                                     <td>
                                         <span className="material-icons">
@@ -238,11 +270,16 @@ function Portfolio({
                 <Col className="col-12 col-md-3">
                     <DashCard
                         title={'Current Value'}
-                        value={`$ ${formatNumber(getCurrentValue())}`}
+                        value={`$ ${formatNumber(getPortfolioValue())}`}
                     />
                 </Col>
                 <Col className="col-12 col-md-3">
-                    <DashCard title={'% Change'} />
+                    <DashCard
+                        title={'% Change'}
+                        value={`${formatNumber(
+                            getOverallPercentageChange(),
+                        )} %`}
+                    />
                 </Col>
                 <Col className="col-12 col-md-3">
                     <DashCard

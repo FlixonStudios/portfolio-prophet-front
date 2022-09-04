@@ -10,3 +10,10 @@ export function formatNumber(number) {
     }
     return '-'
 }
+
+export function getStatusColor(percentage) {
+    if (percentage) {
+        return percentage.toString().charAt(0) === '-' ? 'red' : 'green'
+    }
+    return ''
+}

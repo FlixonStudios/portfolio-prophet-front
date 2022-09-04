@@ -6,7 +6,7 @@ import DashCard from './common/DashCard'
 import StockModal from './common/StockModal'
 import CashModal from './common/CashModal'
 import DividendModal from './common/DividendModal'
-import { formatNumber } from '../../lib/utils'
+import { formatNumber, getStatusColor } from '../../lib/utils'
 
 const DEFAULT_ADD = {
     region: 'SG',
@@ -154,13 +154,6 @@ function Portfolio({
         )
     }
 
-    function getStatusColor(percentage) {
-        if (percentage) {
-            return percentage.toString().charAt(0) === '-' ? 'red' : 'green'
-        }
-        return ''
-    }
-
     function portfolioRows() {
         return (
             <>
@@ -174,7 +167,6 @@ function Portfolio({
                             const unrealisedPNL =
                                 marketValue -
                                 stock.quantity * stock.averagePriceBought
-                            const marketCap = stock.marketCap / 1000000
                             return (
                                 <tr key={index}>
                                     <td>

@@ -4,6 +4,8 @@ import { formatNumber, getStatusColor } from '../../lib/utils'
 import CustomPie from './common/CustomPie'
 import Table from './common/Table'
 import styled from 'styled-components'
+import { Col, Row } from 'react-bootstrap'
+import DashCard from './common/DashCard'
 
 function DashboardContent({
     commonInfo,
@@ -40,7 +42,7 @@ function DashboardContent({
                 <td>Symbol</td>
                 <td>Name</td>
                 <td>Latest Price</td>
-                <td>Weighted Beta</td>
+                <td>Beta</td>
                 <td>% of Portfolio</td>
                 <td>Price:Book Ratio</td>
                 <td>Dividend Yield</td>
@@ -133,26 +135,46 @@ function DashboardContent({
     }
 
     function getPortfolioPercentage() {
-        const cashValue = portfolioCash["CAPITAL"].quantity
+        const cashValue = portfolioCash['CAPITAL'].quantity
         const equityValue = getEquityValue()
         const cashPercentage = (cashValue / (cashValue + equityValue)) * 100
         const cashObj = {
-            symbol: portfolioCash["CAPITAL"].symbol,
+            symbol: portfolioCash['CAPITAL'].symbol,
             percent: cashPercentage,
         }
-        const equityPercentage = (equityValue / (cashValue + equityValue))
-        const equityBreakdown = getEquityPercentage().map((stock) => ({...stock, percent: stock.percent * equityPercentage}))
+        const equityPercentage = equityValue / (cashValue + equityValue)
+        const equityBreakdown = getEquityPercentage().map((stock) => ({
+            ...stock,
+            percent: stock.percent * equityPercentage,
+        }))
 
-        const portfolioPercentage = [
-            ...equityBreakdown,
-            cashObj,
-        ]
+        const portfolioPercentage = [...equityBreakdown, cashObj]
         return portfolioPercentage
+    }
+
+    function getPortfolioBeta() {
+        const equityValue = getEquityValue()
+        const totalBeta = portfolio.reduce((prev, stock) => {
+            return (
+                prev +
+                (stock.beta * stock.quantity * stock.regularMarketPrice) /
+                    equityValue
+            )
+        }, 0)
+        return totalBeta
     }
 
     return (
         <>
             <h1>Dashboard</h1>
+            <Row className="mb-4 no-gutters">
+                <Col className="col-12 col-md-3">
+                    <DashCard
+                        title={'Overall Beta'}
+                        value={`${formatNumber(getPortfolioBeta())}`}
+                    />
+                </Col>
+            </Row>
             <PieContainer>
                 <CustomPie
                     data={getEquityPercentage()}

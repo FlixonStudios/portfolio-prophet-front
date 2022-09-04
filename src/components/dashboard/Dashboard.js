@@ -7,6 +7,7 @@ import SideNavigation from './common/SideNavigation'
 import Portfolio from './Portfolio'
 import Settings from './Settings'
 import Watchlist from './Watchlist'
+import DashboardContent from './DashboardContent'
 
 function Dashboard({ setAuth, auth }) {
     let [userStocks, setUserStocks] = useState()
@@ -38,12 +39,18 @@ function Dashboard({ setAuth, auth }) {
         getUserStocks()
     }, [getUserStocks, watchlist, portfolio])
 
-
     return (
         <div className="dashboard-container">
             <SideNavigation setAuth={setAuth} />
             <Container fluid className="px-0 dashboard-content">
                 <Route path="/dashboard" exact>
+                {userStocks && portfolio && (<DashboardContent
+                        commonInfo={userStocks}
+                        portfolioEquity={portfolio['EQUITY']}
+                        portfolioCash={portfolio['CASH']}
+                        getPortfolio={getPortfolio}
+                        dashboardInfo={watchlist}
+                    />)}
                 </Route>
                 <Route path="/dashboard/portfolio" exact>
                     {userStocks && portfolio && (

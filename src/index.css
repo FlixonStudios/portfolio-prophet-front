@@ -389,8 +389,6 @@ table td .material-icons {
 .forecast-data-table {
   padding: 20px 25px !important;
   overflow-y: scroll;
-  height: 300px;
-  max-height: 300px;
 }
 
 a.card:hover{

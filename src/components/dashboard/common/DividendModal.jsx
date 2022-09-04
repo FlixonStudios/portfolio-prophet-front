@@ -16,14 +16,11 @@ function DividendModal({ setShow, show, context, defaultValue, getFunction }) {
 
     const handleClose = useCallback(() => setShow(false), [setShow], [])
 
-    const addToPortfolio = useCallback(
-        async () => {
-            await portfolioService.addStockToPortfolio(transaction)
-            await getFunction()
-            handleClose()
-        },
-        [getFunction, handleClose, transaction],
-    )
+    const addToPortfolio = useCallback(async () => {
+        await portfolioService.addDividendToPortfolio(transaction)
+        await getFunction()
+        handleClose()
+    }, [getFunction, handleClose, transaction])
 
     function change(e) {
         setTransaction((currState) => ({

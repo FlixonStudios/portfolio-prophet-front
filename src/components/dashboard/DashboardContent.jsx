@@ -135,7 +135,8 @@ function DashboardContent({
     }
 
     function getPortfolioPercentage() {
-        const cashValue = portfolioCash['CAPITAL'].quantity
+        const cashValue =
+            portfolioCash['CAPITAL'].total + portfolioCash['DIVIDEND'].total
         const equityValue = getEquityValue()
         const cashPercentage = (cashValue / (cashValue + equityValue)) * 100
         const cashObj = {

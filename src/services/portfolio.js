@@ -73,6 +73,22 @@ class PortfolioService {
         }
     }
 
+    async addDividendToPortfolio(transaction){
+        try {
+            return await axios.post(
+                `/api/stocks/portfolio/dividend/add`,
+                { ...transaction },
+                {
+                    headers: {
+                        token: `${localStorage.access}`,
+                    },
+                },
+            )
+        } catch (error) {
+            console.log('Error:', error)
+        }
+    }
+
     async getPortfolio() {
         try {
             const { data } = await axios.get(`/api/stocks/portfolio/get`, {

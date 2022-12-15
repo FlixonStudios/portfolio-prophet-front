@@ -30,6 +30,7 @@ function SideNavigation({setAuth}) {
                     <li className="dashboard--link"><NavLink to="/dashboard" className="d-flex align-items-center">Dashboard</NavLink></li>
                     <li className="portfolio--link"><NavLink to="/dashboard/portfolio" className="d-flex align-items-center">Portfolio</NavLink></li>
                     <li className="watchlist--link"><NavLink to="/dashboard/watchlist" className="d-flex align-items-center">Watch List</NavLink></li>
+                    <li className="transactions--link"><NavLink to="/dashboard/transactions" className="d-flex align-items-center">Transactions</NavLink></li>
                     <li className="settings--link"><NavLink to="/dashboard/settings" className="d-flex align-items-center">Settings</NavLink></li>
                     <li className="logout--link">
                         <NavLink to="/dashboard/logout"

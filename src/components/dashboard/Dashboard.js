@@ -8,11 +8,13 @@ import Portfolio from './Portfolio'
 import Settings from './Settings'
 import Watchlist from './Watchlist'
 import DashboardContent from './DashboardContent'
+import { Transactions } from './Transactions'
 
 function Dashboard({ setAuth, auth }) {
     let [userStocks, setUserStocks] = useState()
     let [watchlist, setWatchList] = useState([])
     let [portfolio, setPortfolio] = useState()
+    let [transactions, setTransactions] = useState()
 
     const getUserStocks = useCallback(async () => {
         const data = await portfolioService.getUserStocks()
@@ -29,10 +31,16 @@ function Dashboard({ setAuth, auth }) {
         setPortfolio(data)
     }, [])
 
+    const getTransactions = useCallback(async () => {
+        let { data } = await portfolioService.getTransactions()
+        setTransactions(data)
+    }, [])
+
     useEffect(() => {
         getWatchlist()
         getPortfolio()
-    }, [auth, getWatchlist, getPortfolio])
+        getTransactions()
+    }, [auth, getWatchlist, getPortfolio, getTransactions])
 
     useEffect(() => {
         //TODO: Find a way to stop get userStocks from being called 3 times on startup
@@ -44,13 +52,15 @@ function Dashboard({ setAuth, auth }) {
             <SideNavigation setAuth={setAuth} />
             <Container fluid className="px-0 dashboard-content">
                 <Route path="/dashboard" exact>
-                {userStocks && portfolio && (<DashboardContent
-                        commonInfo={userStocks}
-                        portfolioEquity={portfolio['EQUITY']}
-                        portfolioCash={portfolio['CASH']}
-                        getPortfolio={getPortfolio}
-                        dashboardInfo={watchlist}
-                    />)}
+                    {userStocks && portfolio && (
+                        <DashboardContent
+                            commonInfo={userStocks}
+                            portfolioEquity={portfolio['EQUITY']}
+                            portfolioCash={portfolio['CASH']}
+                            getPortfolio={getPortfolio}
+                            dashboardInfo={watchlist}
+                        />
+                    )}
                 </Route>
                 <Route path="/dashboard/portfolio" exact>
                     {userStocks && portfolio && (
@@ -70,6 +80,11 @@ function Dashboard({ setAuth, auth }) {
                             getWatchlist={getWatchlist}
                             getPortfolio={getPortfolio}
                         />
+                    )}
+                </Route>
+                <Route path="/dashboard/transactions">
+                    {userStocks && transactions && (
+                        <Transactions transactions={transactions} />
                     )}
                 </Route>
                 <Route path="/dashboard/details/:symbol">

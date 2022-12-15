@@ -614,7 +614,7 @@ footer {
   transition: ease-in-out 0.5s;
 }
 
-.sidenav .navigation--items li:nth-child(4) {
+.sidenav .navigation--items li:nth-child(5) {
   margin-top: auto
 }
 
@@ -649,6 +649,10 @@ footer {
 }
 
 .navigation--items .watchlist--link a:before {
+  content: '\e8f4';
+}
+
+.navigation--items .transactions--link a:before {
   content: '\e896';
 }
 

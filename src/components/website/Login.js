@@ -1,10 +1,9 @@
-import { Redirect, useHistory } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import React from 'react'
 import { Row, Col, Form, Button } from 'react-bootstrap'
 import axios from 'axios'
 
 function Login({ setAuth }) {
-    //console.log(props)
     const history = useHistory()
     async function registerUser(e) {
         e.preventDefault()
@@ -22,7 +21,7 @@ function Login({ setAuth }) {
 
             localStorage.setItem('access', data.token)
             setAuth(true)
-            history.push('/dashboard')
+            history.push('/main/dashboard')
         } catch (e) {
             console.log(e)
             console.log(e.response)
@@ -51,7 +50,7 @@ function Login({ setAuth }) {
             localStorage.setItem('access', data.token)
 
             setAuth(true)
-            history.push('/dashboard')
+            history.push('/main/dashboard')
         } catch (e) {
             console.log(e.response)
             history.push('/login')

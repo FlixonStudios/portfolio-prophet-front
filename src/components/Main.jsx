@@ -1,16 +1,17 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { Container } from 'react-bootstrap'
-import { Route } from 'react-router-dom'
-import { portfolioService } from '../../services/portfolio'
-import { Transactions } from '../transactions/Transactions'
-import Details from '../website/Details'
-import SideNavigation from '../navigation/SideNavigation'
-import DashboardContent from './DashboardContent'
-import Portfolio from '../portfolio/Portfolio'
-import Settings from '../settings/Settings'
-import Watchlist from '../watchlist/Watchlist'
+import { Route, useHistory } from 'react-router-dom'
+import { portfolioService } from '../services/portfolio'
+import { Transactions } from './transactions/Transactions'
+import Details from './website/Details'
+import SideNavigation from './navigation/SideNavigation'
+import DashboardContent from './dashboard/DashboardContent'
+import Portfolio from './portfolio/Portfolio'
+import Settings from './settings/Settings'
+import Watchlist from './watchlist/Watchlist'
 
-function Dashboard({ setAuth, auth }) {
+function Main({ setAuth, auth }) {
+    const history = useHistory()
     let [userStocks, setUserStocks] = useState()
     let [watchlist, setWatchList] = useState([])
     let [portfolio, setPortfolio] = useState()
@@ -37,6 +38,10 @@ function Dashboard({ setAuth, auth }) {
     }, [])
 
     useEffect(() => {
+        history.push('/main/dashboard')
+    }, [])
+
+    useEffect(() => {
         getWatchlist()
         getPortfolio()
         getTransactions()
@@ -51,7 +56,7 @@ function Dashboard({ setAuth, auth }) {
         <div className="dashboard-container">
             <SideNavigation setAuth={setAuth} />
             <Container fluid className="px-0 dashboard-content">
-                <Route path="/dashboard" exact>
+                <Route path="/main/dashboard">
                     {userStocks && portfolio && (
                         <DashboardContent
                             commonInfo={userStocks}
@@ -62,7 +67,7 @@ function Dashboard({ setAuth, auth }) {
                         />
                     )}
                 </Route>
-                <Route path="/dashboard/portfolio" exact>
+                <Route path="/main/portfolio">
                     {userStocks && portfolio && (
                         <Portfolio
                             commonInfo={userStocks}
@@ -72,7 +77,7 @@ function Dashboard({ setAuth, auth }) {
                         />
                     )}
                 </Route>
-                <Route path="/dashboard/watchlist">
+                <Route path="/main/watchlist">
                     {userStocks && watchlist && (
                         <Watchlist
                             watchlistInfo={watchlist}
@@ -82,7 +87,7 @@ function Dashboard({ setAuth, auth }) {
                         />
                     )}
                 </Route>
-                <Route path="/dashboard/transactions">
+                <Route path="/main/transactions">
                     {userStocks && transactions && (
                         <Transactions
                             transactions={transactions}
@@ -90,10 +95,10 @@ function Dashboard({ setAuth, auth }) {
                         />
                     )}
                 </Route>
-                <Route path="/dashboard/details/:symbol">
+                <Route path="/main/details/:symbol">
                     <Details auth={auth} watchlist={watchlist} />
                 </Route>
-                <Route path="/dashboard/settings">
+                <Route path="/main/settings">
                     <Settings />
                 </Route>
             </Container>
@@ -101,4 +106,4 @@ function Dashboard({ setAuth, auth }) {
     )
 }
 
-export default Dashboard
+export default Main

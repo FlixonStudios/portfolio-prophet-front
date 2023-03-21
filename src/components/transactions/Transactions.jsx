@@ -1,13 +1,12 @@
 import React from 'react'
 import { Col } from 'react-bootstrap'
-import Table from './common/Table'
+import Table from '../dashboard/common/Table'
+import DeleteButton from './components/DeleteButton'
 
-export function Transactions({ transactions }) {
+export function Transactions({ transactions, getTransactions }) {
     function transactionHeaders() {
         return (
             <>
-                <td>Id</td>
-                <td>User Id</td>
                 <td>Symbol</td>
                 <td>Date Added</td>
                 <td>Currency</td>
@@ -17,6 +16,7 @@ export function Transactions({ transactions }) {
                 <td>Fee</td>
                 <td>Account</td>
                 <td>Final Amount</td>
+                <td>Actions</td>
             </>
         )
     }
@@ -26,8 +26,6 @@ export function Transactions({ transactions }) {
                 {transactions &&
                     transactions.map((transaction, index) => {
                         const {
-                            id,
-                            userId,
                             symbol,
                             dateAdded,
                             currency,
@@ -40,8 +38,6 @@ export function Transactions({ transactions }) {
                         } = transaction
                         return (
                             <tr key={index}>
-                                <td>{id}</td>
-                                <td>{userId}</td>
                                 <td>{symbol}</td>
                                 <td>{dateAdded}</td>
                                 <td>{currency}</td>
@@ -51,6 +47,9 @@ export function Transactions({ transactions }) {
                                 <td>{fee}</td>
                                 <td>{account}</td>
                                 <td>{finalAmount}</td>
+                                <td>
+                                    <DeleteButton onUpdate={getTransactions} transaction={transaction} />
+                                </td>
                             </tr>
                         )
                     })}
@@ -60,7 +59,7 @@ export function Transactions({ transactions }) {
     return (
         <>
             <h1>Transactions</h1>
-            <Col className={`col-12 col-xl-6`}>
+            <Col className={`col-12`}>
                 <Table
                     headers={transactionHeaders()}
                     rows={transactionRows()}

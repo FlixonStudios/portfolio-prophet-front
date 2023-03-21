@@ -2,13 +2,13 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { Container } from 'react-bootstrap'
 import { Route } from 'react-router-dom'
 import { portfolioService } from '../../services/portfolio'
+import { Transactions } from '../transactions/Transactions'
 import Details from '../website/Details'
 import SideNavigation from './common/SideNavigation'
+import DashboardContent from './DashboardContent'
 import Portfolio from './Portfolio'
 import Settings from './Settings'
 import Watchlist from './Watchlist'
-import DashboardContent from './DashboardContent'
-import { Transactions } from './Transactions'
 
 function Dashboard({ setAuth, auth }) {
     let [userStocks, setUserStocks] = useState()
@@ -84,7 +84,7 @@ function Dashboard({ setAuth, auth }) {
                 </Route>
                 <Route path="/dashboard/transactions">
                     {userStocks && transactions && (
-                        <Transactions transactions={transactions} />
+                        <Transactions transactions={transactions} getTransactions={getTransactions} />
                     )}
                 </Route>
                 <Route path="/dashboard/details/:symbol">

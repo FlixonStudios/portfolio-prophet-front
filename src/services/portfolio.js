@@ -148,6 +148,24 @@ class PortfolioService {
             console.log('Error:', error)
         }
     }
+
+    async deleteTransaction(transactionId) {
+        try {
+            return await axios.delete(
+                `/api/stocks/portfolio/transaction/delete`,
+                {
+                    headers: {
+                        token: `${localStorage.access}`,
+                    },
+                    data: {
+                        id: transactionId
+                    }
+                },
+            )
+        } catch (error) {
+            console.log('Error:', error)
+        } 
+    }
 }
 
 export const portfolioService = new PortfolioService()

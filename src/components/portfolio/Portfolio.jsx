@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
-import Table from './common/Table'
+import Table from '../dashboard/common/Table'
 import { Button, Col, Row } from 'react-bootstrap'
-import DashCard from './common/DashCard'
-import StockModal from './common/StockModal'
-import CashModal from './common/CashModal'
-import DividendModal from './common/DividendModal'
+import DashCard from '../dashboard/common/DashCard'
+import StockModal from './components/StockModal'
+import CashModal from './components/CashModal'
+import DividendModal from './components/DividendModal'
 import { formatNumber, getStatusColor } from '../../lib/utils'
 
 const DEFAULT_ADD = {

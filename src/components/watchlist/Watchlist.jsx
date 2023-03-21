@@ -4,8 +4,8 @@ import { Col, Form, Row } from 'react-bootstrap'
 import { NavLink } from 'react-router-dom'
 import { formatNumber } from '../../lib/utils'
 import { portfolioService } from '../../services/portfolio'
-import Table from './common/Table'
-import StockModal from './common/StockModal'
+import Table from '../dashboard/common/Table'
+import StockModal from '../portfolio/components/StockModal'
 
 const DEFAULT_ADD = {
     region: 'SG',

@@ -33,7 +33,7 @@ function DividendModal({ setShow, show, context, defaultValue, getFunction }) {
         <>
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Add To Portfolio</Modal.Title>
+                    <Modal.Title>Add Dividend From Stock</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form>

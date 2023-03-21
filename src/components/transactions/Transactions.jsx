@@ -1,6 +1,6 @@
 import React from 'react'
 import { Col } from 'react-bootstrap'
-import Table from '../dashboard/common/Table'
+import Table from '../common/Table'
 import DeleteButton from './components/DeleteButton'
 
 export function Transactions({ transactions, getTransactions }) {
@@ -48,7 +48,10 @@ export function Transactions({ transactions, getTransactions }) {
                                 <td>{account}</td>
                                 <td>{finalAmount}</td>
                                 <td>
-                                    <DeleteButton onUpdate={getTransactions} transaction={transaction} />
+                                    <DeleteButton
+                                        onUpdate={getTransactions}
+                                        transaction={transaction}
+                                    />
                                 </td>
                             </tr>
                         )

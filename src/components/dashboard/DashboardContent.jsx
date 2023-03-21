@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { formatNumber, getStatusColor } from '../../lib/utils'
-import CustomPie from './common/CustomPie'
-import Table from './common/Table'
+import CustomPie from '../common/CustomPie'
+import Table from '../common/Table'
 import styled from 'styled-components'
 import { Col, Row } from 'react-bootstrap'
-import DashCard from './common/DashCard'
+import DashCard from '../common/DashCard'
 
 function DashboardContent({
     commonInfo,

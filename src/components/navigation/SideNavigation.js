@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 import {Image} from "react-bootstrap";
-import logo from "../../../assets/Logo-Colored.png";
+import logo from "../../assets/Logo-Colored.png";
 import {NavLink} from "react-router-dom";
 
 function SideNavigation({setAuth}) {

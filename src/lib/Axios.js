@@ -1,6 +1,6 @@
 import Axios from "axios";
 
-let baseUrl = 'http://localhost:8000'
+let baseUrl = 'http://127.0.0.1:8000'
 //let baseUrl = 'https://portfolio-prophet-sei29.herokuapp.com'
 Axios.interceptors.request.use(
     config => {
